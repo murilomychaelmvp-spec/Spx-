@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#ffffff">
+<title>SPX Motorista — demonstração</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f3f4f9;color:#252a30;font-family:Roboto,"Arial",sans-serif}
+header{height:66px;background:#fff;display:flex;align-items:center;padding:0 20px;gap:22px;font-size:23px;font-weight:600}
+.back{font-size:32px;color:#344454} .stamp{text-align:center;color:#9299a1;font-size:14px;padding:22px 8px 18px}
+.card{background:#fff;margin:0 16px;border-radius:18px;overflow:hidden;min-height:620px;box-shadow:0 1px 2px #ddd}
+.banner{padding:22px 26px;font-size:18px;font-weight:600;display:flex;gap:14px;align-items:center}
+.green{background:#e8faef;color:#2eae76}.yellow{background:#fff7dc;color:#e5a72d}.blue{background:#eaf3ff;color:#397bc2}
+.stats{display:grid;grid-template-columns:1fr 1fr;padding:52px 20px 42px;text-align:center}
+.stat+ .stat{border-left:1px solid #e1e3e6}.num{font-size:42px;font-weight:700;color:#25ad70}.yellowtxt{color:#e5a018}.bluetxt{color:#397bc2}.blacktxt{color:#252a30}
+.sub{font-size:18px;color:#9299a1;margin-top:8px}
+.details{padding:10px 28px 28px}.line{display:flex;justify-content:space-between;gap:12px;margin:0 0 25px;font-size:17px}.key{color:#9299a1}.val{text-align:right;font-weight:500;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{background:#d9f3dc;color:#429d59;padding:5px 12px}
+.barcode{margin:30px auto 22px;width:88%;height:100px;display:flex;align-items:stretch;gap:4px;overflow:hidden}
+.barcode i{display:block;background:#111;flex:1}.barcode i:nth-child(3n){flex:2}.barcode i:nth-child(4n){background:white}
+.hint{text-align:center;color:#9299a1;font-size:14px;line-height:1.4;padding:0 24px 28px}
+.demo{text-align:center;color:#a0a5ad;font-size:11px;letter-spacing:1px;margin:12px}
+footer{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #e4e6eb}
+button{width:100%;border:0;border-radius:4px;background:#f0442e;color:white;font-size:18px;font-weight:600;padding:20px}
+.pager{display:flex;justify-content:center;gap:7px;padding:12px 0 92px}.dot{width:8px;height:8px;border-radius:50%;background:#c8cbd1}.dot.on{background:#f0442e;width:20px;border-radius:8px}
+</style></head>
+<body>
+<header><span class="back">‹</span><span>Status da Fila</span></header>
+<div class="stamp" id="time">Último Horário da Atualização: demonstração offline</div>
+<div class="card" id="panel">
+ <div class="banner green" id="banner">▣ <span>É a sua vez, dirija-se à doca.</span></div>
+ <div class="stats">
+  <div class="stat"><div class="num" id="queue">OB0149</div><div class="sub">Número na Fila</div></div>
+  <div class="stat"><div class="num" id="ahead">0</div><div class="sub" id="aheadLabel">Caminhões à Frente</div></div>
+ </div>
+ <div class="details" id="details"></div>
+ <div class="barcode" aria-label="Representação visual fictícia de demonstração"></div>
+ <div class="hint" id="hint">Tela ilustrativa. Não é um registro operacional nem um código válido.</div>
+</div>
+<div class="demo">MODO DEMONSTRAÇÃO — DADOS ILUSTRATIVOS</div>
+<div class="pager"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div>
+<footer><button onclick="next()">Registro de Fila — demonstração</button></footer>
+<script>
+const screens=[
+ {banner:'É a sua vez, dirija-se à doca.',cls:'green',queue:'OB0149',ahead:'0',rows:[['Doca alocada','MESA 11'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo','KWE4041'],['Estação Atual','LM_HUB_RJ_Jacarepaguá'],['Tag de entrada','CERCADO']],tag:true},
+ {banner:'A fila está em espera.',cls:'yellow',queue:'OB0362',ahead:'—',rows:[['Doca designada (Grupo)','—'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo','KWE4041'],['Estação Atual','LM Hub_RJ_Jacarepaguá']]},
+ {banner:'Fila EXPEDIÇÃO — demonstração',cls:'blue',queue:'OB0279',ahead:'8',rows:[['Doca designada (Grupo)','EXPEDIÇÃO'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo','KWE4041'],['Estação Atual','LM Hub_RJ_Jacarepaguá'],['Tag de entrada','CERCADO']],tag:true}
+];
+let idx=0;
+function render(){
+ const s=screens[idx];document.getElementById('banner').className='banner '+s.cls;document.querySelector('#banner span').textContent=s.banner;
+ document.getElementById('queue').textContent=s.queue;document.getElementById('ahead').textContent=s.ahead;
+ document.getElementById('queue').className='num '+(idx===1?'yellowtxt':idx===2?'blacktxt':'');
+ document.getElementById('ahead').className='num '+(idx===1?'yellowtxt':idx===2?'blacktxt':'');
+ document.getElementById('aheadLabel').style.color=idx===2?'#252a30':'';
+ document.getElementById('details').innerHTML=s.rows.map(r=>`<div class="line"><span class="key">${r[0]}</span><span class="val ${r[0].startsWith('Tag')?'tag':''}">${r[1]}</span></div>`).join('');
+ document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===idx));
+ document.getElementById('time').textContent='Último Horário da Atualização: demonstração offline';
+}
+function next(){idx=(idx+1)%3;render()}
+let x0=0;document.addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{let dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>55){idx=(idx+(dx<0?1:2))%3;render()}},{passive:true});
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next();if(e.key==='ArrowLeft'){idx=(idx+2)%3;render()}});
+document.querySelector('.barcode').innerHTML=Array.from({length:38},(_,i)=>`<i style="flex:${[1,2,3,4,5][i%5]}"></i>`).join('');
+render();
+</script></body></html>
