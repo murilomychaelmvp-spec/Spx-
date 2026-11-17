@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#ffffff"><link rel="manifest" href="./manifest.webmanifest">
+<title>SPX Motorista</title>
+<style>
+:root{--red:#f0442e;--bg:#f3f4f9;--ink:#252a30;--muted:#9299a1;--line:#e7e9ed;--green:#2eae76}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Roboto,"Arial",sans-serif}
+button{font-family:inherit;cursor:pointer;border:0}
+button svg,.deliveryPill svg,.menuIcon svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.deliveryPill{display:flex;align-items:center;gap:8px}
+.mapBtn,.scanBtn{display:flex;align-items:center;justify-content:center;gap:12px}
+.iconbtn svg{width:25px;height:25px}
+.menuIcon svg{width:21px;height:21px}
+.disclosure{font-size:10px;letter-spacing:.8px;color:#9ba2aa;text-align:center;padding:6px}
+.topbar{height:72px;background:#fff;display:flex;align-items:center;padding:0 20px;gap:22px}
+.iconbtn{background:transparent;color:#344454;font-size:27px;padding:4px;width:34px}
+.deliveryPill{background:#f3f4f8;border-radius:28px;padding:10px 20px;color:#697582;font-size:22px;font-weight:600}
+.topSpacer{flex:1}.topIcon{font-size:27px;color:#344454;background:transparent;padding:4px}
+.tabs{height:78px;background:#fff;display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid #e4e6eb}
+.tab{background:#fff;color:#9299a1;font-size:17px;font-weight:500;border-bottom:3px solid transparent;padding:12px 2px 8px;white-space:nowrap}
+.tab.active{color:#252a30;border-bottom-color:var(--red);font-weight:700}
+.recommendWrap{padding:10px 30px 15px;background:#fff}
+.recommend{width:100%;height:70px;border:2px solid #b77d70;border-radius:5px;background:#fff;color:#a95e4e;font-size:19px;font-weight:600}
+.mapBtn{margin:14px 16px 0;width:calc(100% - 32px);height:86px;border-radius:15px;background:#fff;color:#77818a;font-size:27px}
+.emptyArea{height:calc(100dvh - 430px);min-height:270px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#9299a1;text-align:center;padding:15px}
+.emptyIllustration{font-size:82px;color:#cbd0d9;line-height:1;margin-bottom:25px}
+.emptyText{font-size:22px;line-height:1.4}
+.scanBtn{display:block;width:calc(100% - 64px);margin:0 auto 22px;height:86px;background:var(--red);color:white;border-radius:5px;font-size:25px;font-weight:600}
+.blankState{height:calc(100dvh - 230px);display:flex;align-items:center;justify-content:center;color:#cbd0d9;font-size:78px}
+.datebar{background:#fff;padding:18px 30px;display:flex;justify-content:space-between;color:#9299a1;font-size:18px}
+.datebar button{background:transparent;color:#557ba9;font-size:18px}
+.history{padding:14px 15px 35px}
+.deliveryCard{background:#fff;border-radius:14px;margin-bottom:14px;overflow:hidden}
+.tracking{padding:22px 28px;border-bottom:1px solid #edf0f2;color:#9299a1;font-size:19px}
+.address{padding:22px 28px 8px;font-size:22px;font-weight:600}
+.recipient{padding:14px 28px;color:#6f7880;font-size:19px}
+.delivered{padding:8px 28px 22px;color:#38aa77;font-size:17px}
+#queueScreen{display:none;padding-bottom:24px}
+.qHeader{height:66px;background:#fff;display:flex;align-items:center;padding:0 20px;gap:22px;font-size:23px;font-weight:600}
+.stamp{text-align:center;color:#9299a1;font-size:14px;padding:22px 8px 18px}
+.card{background:#fff;margin:0 16px;border-radius:18px;overflow:hidden;min-height:620px}
+.banner{padding:22px 26px;font-size:18px;font-weight:600;display:flex;gap:14px;align-items:center}
+.green{background:#e8faef;color:#2eae76}.yellow{background:#fff7dc;color:#e5a72d}.blue{background:#eaf3ff;color:#397bc2}
+.stats{display:grid;grid-template-columns:1fr 1fr;padding:52px 20px 42px;text-align:center}
+.stat+.stat{border-left:1px solid #e1e3e6}.num{font-size:42px;font-weight:700;color:#25ad70}.num.waiting{color:#e5a72d}.num.dispatch{color:#252a30}.sub{font-size:18px;color:#9299a1;margin-top:8px}
+.details{padding:10px 28px 28px}.line{display:flex;justify-content:space-between;gap:12px;margin:0 0 25px;font-size:17px}.key{color:#9299a1}.val{text-align:right;font-weight:500;max-width:58%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag{background:#d9f3dc;color:#429d59;padding:5px 12px}
+.barcode{margin:30px auto 22px;width:88%;height:100px;display:flex;align-items:stretch;gap:4px;overflow:hidden}
+.barcode i{display:block;background:#111;flex:1}.barcode i:nth-child(3n){flex:2}.barcode i:nth-child(4n){background:white}
+.hint{text-align:center;color:#9299a1;font-size:14px;line-height:1.4;padding:0 24px 28px}
+.disclosure{text-align:center;color:#a0a5ad;font-size:10px;letter-spacing:.6px;padding:10px}
+#drawer{display:none;position:fixed;inset:0;background:#0006;z-index:20}
+.drawerPanel{height:100%;width:83%;max-width:430px;background:#fff;padding:18px 24px;position:relative;overflow:auto}
+.profile{display:flex;align-items:center;gap:14px;padding:4px 0 26px}
+.avatar{width:66px;height:66px;border-radius:50%;background:#e7eaf0;display:flex;align-items:center;justify-content:center;font-size:28px;color:#8b96a1}
+.profileName{font-size:17px;font-weight:700;line-height:1.35}.profileId{font-size:13px;color:#9aa1a8;margin-top:3px}
+.menuItem{height:67px;display:flex;align-items:center;gap:20px;font-size:16px;color:#30363c}
+.menuIcon{width:22px;text-align:center;font-size:20px;color:#66717d}
+.pending{margin-left:auto;background:#fff4cf;color:#c69a25;border-radius:18px;padding:7px 12px;font-size:12px;white-space:nowrap}
+.bottomMenu{position:absolute;bottom:22px;left:24px;color:#a2a9b1;font-size:14px}
+#settings{display:none;position:fixed;inset:0;background:#0008;z-index:30;align-items:center;justify-content:center;padding:20px}
+.settingsBox{background:white;border-radius:14px;padding:22px;width:100%;max-width:420px;max-height:90dvh;overflow:auto}
+.settingsBox input{width:100%;padding:13px;border:1px solid #ccc;border-radius:8px;font-size:17px;margin:5px 0 12px}
+.primary{background:var(--red);color:#fff;padding:14px;border-radius:5px;font-size:17px}
+.secondary{background:#e9edf2;color:#333;padding:14px;border-radius:5px;font-size:17px}
+@media(max-height:700px){.emptyArea{height:280px}.menuItem{height:58px}}
+</style></head><body>
+<div id="homeScreen">
+ <div class="topbar">
+  <button class="iconbtn" aria-label="Menu" onclick="toggleDrawer()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button><div class="deliveryPill"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v11H3zM3 8.5l9 4.5 9-4.5M12 13v6.5"/></svg><span>Entrega</span></div>
+  <div class="topSpacer"></div><button class="topIcon" aria-label="Pesquisar" onclick="notice('Pesquisa')"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="7.2"/><path d="m16.2 16.2 4.3 4.3"/></svg></button><button class="topIcon" aria-label="Mensagens" onclick="notice('Mensagens')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v12H9l-5 3z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/></svg></button><button class="topIcon" aria-label="Notificações" onclick="notice('Notificações')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button>
+ </div>
+ <div class="tabs">
+  <button class="tab active" onclick="selectTab('rota',this)">Em Rota (0)</button>
+  <button class="tab" onclick="selectTab('ocorrencia',this)">Ocorrência (0)</button>
+  <button class="tab" onclick="selectTab('encerrado',this)">Encerrado (1138)</button>
+ </div>
+ <div id="swipeArea">
+ <section id="rotaView">
+  <div class="recommendWrap"><button class="recommend" onclick="notice('Recomendação')">Recomendar ▼</button></div>
+  <button class="mapBtn" onclick="notice('Mapa')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/></svg><span>Mostrar no mapa</span></button>
+  <div class="emptyArea"><div class="emptyIllustration">✉</div><div class="emptyText">Por favor, escaneie o código de barras no pacote</div></div>
+  <button class="scanBtn" onclick="notice('Leitor de código de barras')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/></svg><span>Escanear</span></button>
+ </section>
+ <section id="ocorrenciaView" style="display:none"><div class="blankState">✉</div></section>
+ <section id="encerradoView" style="display:none">
+  <div class="datebar"><span>2026/07/05 - 2026/08/05</span><button onclick="notice('Seletor de datas')">Selecionar data</button></div>
+  <div class="history" id="historyList"></div>
+ </section>
+ </div>
+ 
+</div>
+<div id="queueScreen" style="display:none">
+ <header class="qHeader"><button class="iconbtn" onclick="showHome()">‹</button><span>Status da Fila</span><button class="iconbtn" style="margin-left:auto" onclick="openSettings()">⚙</button></header>
+ <div class="stamp">Última atualização: <span id="liveTime"></span></div>
+ <div class="card">
+  <div class="banner green" id="banner">▣ <span>É a sua vez, dirija-se à doca.</span></div>
+  <div class="stats"><div class="stat"><div class="num" id="queue">OB0149</div><div class="sub">Número na Fila</div></div><div class="stat"><div class="num" id="ahead">0</div><div class="sub">Caminhões à Frente</div></div></div>
+  <div class="details" id="details"></div>
+  <div class="barcode" aria-label="Código gráfico ilustrativo sem validade operacional"></div>
+  
+ </div>
+ 
+ 
+</div>
+
+<div id="barcodeScreen" style="display:none;min-height:100dvh;background:#f3f4f9">
+ <header class="qHeader"><button class="iconbtn" onclick="showHome()">‹</button><span>Código de barras</span></header>
+ <section style="background:#fff;border-radius:18px;margin:16px 20px;padding:34px 18px;text-align:center">
+  <div id="barcodeName" style="font-size:22px;font-weight:700;color:#17191c">MOTORISTA</div>
+  <div id="barcodeId" style="font-size:21px;font-weight:600;color:#a0a6ad;margin:16px 0 34px">ID ilustrativo</div>
+  <div class="barcode" style="height:125px;width:92%;margin:0 auto 8px"></div>
+  
+ </section>
+ <section style="background:#fff;border-radius:18px;margin:0 20px;padding:22px 26px">
+  <div class="line"><span class="key">Tipo do veículo</span><span class="val" id="barcodeVehicle">Passeio</span></div>
+  <div class="line" style="margin-bottom:0"><span class="key">Placa do Veículo</span><span class="val" id="barcodePlate">KWE4041</span></div>
+ </section>
+ 
+</div>
+<div id="drawer" onclick="if(event.target===this)toggleDrawer()"><nav class="drawerPanel">
+ <div class="profile"><div class="avatar" id="profileAvatar">👤</div><div><div class="profileName" id="profileName">MOTORISTA</div><div class="profileId" id="profilePhone">Telefone não informado</div></div><button aria-label="Código de barras" style="margin-left:auto;background:transparent;padding:8px" onclick="showBarcode()">
+ <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#68727d" stroke-width="1.8" stroke-linecap="round"><path d="M4 5v14M7 5v14M10 5v14M14 5v14M17 5v14M20 5v14"/></svg>
+</button></div>
+ <div class="menuItem" onclick="showQueue()"><span class="menuIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v11h-6v-7H9v7H3z"/></svg></span>Status da Fila</div>
+ <div class="menuItem" onclick="notice('Estatísticas de pedidos')"><span class="menuIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M8 15l4-4 3 2 5-7"/><path d="M16 6h4v4"/></svg></span>Estatísticas de pedidos</div>
+ <div class="menuItem" onclick="notice('Desempenho')"><span class="menuIcon">♧</span>Desempenho</div>
+ <div class="menuItem" onclick="notice('Transferência de pacotes')"><span class="menuIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h14m-4-4 4 4-4 4M20 17H6m4-4-4 4 4 4"/></svg></span>Transferência de pacotes</div>
+ <div class="menuItem" onclick="notice('PNR')"><span class="menuIcon">▣</span>PNR (Paguei e Não Recebi) - Motor...</div>
+ <div class="menuItem" onclick="notice('Treinamento')"><span class="menuIcon">▢</span>Treinamento <span class="pending">● 25 Pendente</span></div>
+ <div class="menuItem" onclick="notice('Central de Ajuda')"><span class="menuIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13v-2a8 8 0 0 1 16 0v2M4 13H3v5h4v-5zM20 13h1v5h-4v-5zM17 20h-5"/></svg></span>Central de Ajuda</div>
+ <div class="menuItem" onclick="openSettings()"><span class="menuIcon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6 7 7m10 10 1.4 1.4m0-12.8L17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="5"/></svg></span>Configuração</div>
+ <div class="bottomMenu">Enviar comprovante　ⓘ</div>
+</nav></div>
+<div id="settings"><div class="settingsBox">
+ <h3>Configuração</h3>
+ <label>Nome do motorista</label><input id="driverInput" placeholder="Nome do motorista">
+ <label>Número de telefone</label><input id="phoneInput" inputmode="tel" placeholder="(00) 00000-0000">
+ <label>Identificação</label><input id="driverIdInput" placeholder="ID ilustrativo">
+ <label>Foto do motorista</label><input id="photoInput" type="file" accept="image/*">
+ <label>Tipo de veículo</label><input id="vehicleInput" placeholder="Passeio">
+ <label>Placa do veículo</label><input id="plateInput" maxlength="8" placeholder="ABC1D23">
+ <div style="display:flex;gap:10px"><button class="secondary" style="flex:1" onclick="closeSettings()">Cancelar</button><button class="primary" style="flex:1" onclick="saveSettings()">Salvar</button></div>
+ 
+</div></div>
+<script>
+const queueStates=[
+ {banner:'É a sua vez, dirija-se à doca.',cls:'green',queue:'OB0149',ahead:'0',rows:[['Doca alocada','MESA 11'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo',''],['Estação Atual','LM_HUB_RJ_Jacarepaguá'],['Tag de entrada','CERCADO']]},
+ {banner:'É a sua vez, dirija-se à doca.',cls:'green',queue:'OB0428',ahead:'0',rows:[['Doca alocada','MESA 21'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo',''],['Estação Atual','LM Hub_RJ_Jacarepaguá'],['Tag de entrada','CERCADO']]},
+ {banner:'A fila está em espera.',cls:'yellow',queue:'OB0362',ahead:'-',rows:[['Doca designada (Grupo)','-'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo',''],['Estação Atual','LM Hub_RJ_Jacarepaguá']]},
+ {banner:'Fila EXPEDIÇÃO',cls:'blue',queue:'OB0279',ahead:'8',rows:[['Doca designada (Grupo)','EXPEDIÇÃO'],['Tipo de Chegada','Entrega - Outbound'],['Número do veículo',''],['Estação Atual','LM Hub_RJ_Jacarepaguá'],['Tag de entrada','CERCADO']]}
+];
+let qIndex=0;
+function currentPlate(){return (localStorage.getItem('spx_demo_plate')||'KWE4041').toUpperCase()}
+function renderQueue(){let q=queueStates[qIndex];document.getElementById('banner').className='banner '+q.cls;document.getElementById('banner').innerHTML='▣ <span>'+q.banner+'</span>';document.getElementById('queue').textContent=q.queue;document.getElementById('ahead').textContent=q.ahead;
+ document.getElementById('queue').className='num'+(q.cls==='yellow'?' waiting':q.cls==='blue'?' dispatch':'');
+ document.getElementById('ahead').className='num'+(q.cls==='yellow'?' waiting':q.cls==='blue'?' dispatch':'');document.getElementById('details').innerHTML=q.rows.map(r=>'<div class="line"><span class="key">'+r[0]+'</span><span class="val '+(r[0].startsWith('Tag')?'tag':'')+'">'+(r[0]==='Número do veículo'?currentPlate():r[1])+'</span></div>').join('')}
+function queueStep(d){qIndex=(qIndex+d+queueStates.length)%queueStates.length;renderQueue()}
+let queueTouchX=0,queueTouchY=0;
+const queueSwipeArea=document.getElementById('queueScreen');
+queueSwipeArea.addEventListener('touchstart',e=>{
+ const t=e.changedTouches[0];queueTouchX=t.clientX;queueTouchY=t.clientY;
+},{passive:true});
+queueSwipeArea.addEventListener('touchend',e=>{
+ const t=e.changedTouches[0],dx=t.clientX-queueTouchX,dy=t.clientY-queueTouchY;
+ if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.25){
+  queueStep(dx<0?1:-1);
+ }
+},{passive:true});
+function toggleDrawer(){let d=document.getElementById('drawer');d.style.display=d.style.display==='block'?'none':'block'}
+function hideMainScreens(){
+ document.getElementById('homeScreen').style.display='none';
+ document.getElementById('queueScreen').style.display='none';
+ document.getElementById('barcodeScreen').style.display='none';
+}
+function showQueue(){
+ document.getElementById('drawer').style.display='none';
+ hideMainScreens();
+ document.getElementById('queueScreen').style.display='block';
+ window.scrollTo(0,0);renderQueue();updateClock();
+}
+function showHome(){
+ document.getElementById('drawer').style.display='none';
+ hideMainScreens();
+ document.getElementById('homeScreen').style.display='block';
+ window.scrollTo(0,0);
+}
+function selectTab(which,btn){document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));btn.classList.add('active');['rota','ocorrencia','encerrado'].forEach(k=>document.getElementById(k+'View').style.display=k===which?'block':'none')}
+function notice(t){alert(t+' — ')}
+let touchStartX=0,touchStartY=0;
+const swipe=document.getElementById('swipeArea');
+swipe.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].clientX;touchStartY=e.changedTouches[0].clientY},{passive:true});
+swipe.addEventListener('touchend',e=>{
+ const dx=e.changedTouches[0].clientX-touchStartX,dy=e.changedTouches[0].clientY-touchStartY;
+ if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)){
+  const active=[...document.querySelectorAll('.tab')].findIndex(t=>t.classList.contains('active'));
+  const next=Math.max(0,Math.min(2,active+(dx<0?1:-1)));
+  document.querySelectorAll('.tab')[next].click();
+ }
+},{passive:true});
+function openSettings(){document.getElementById('drawer').style.display='none';document.getElementById('driverInput').value=localStorage.getItem('spx_demo_driver')||'';document.getElementById('driverIdInput').value=localStorage.getItem('spx_demo_driver_id')||'';document.getElementById('phoneInput').value=localStorage.getItem('spx_demo_phone')||'';document.getElementById('vehicleInput').value=localStorage.getItem('spx_demo_vehicle')||'Passeio';document.getElementById('plateInput').value=currentPlate();document.getElementById('settings').style.display='flex'}
+function closeSettings(){document.getElementById('settings').style.display='none'}
+function saveSettings(){
+ let p=document.getElementById('plateInput').value.trim().toUpperCase();
+ if(!p){alert('Informe a placa.');return}
+ localStorage.setItem('spx_demo_plate',p);
+ localStorage.setItem('spx_demo_driver',document.getElementById('driverInput').value.trim());
+ localStorage.setItem('spx_demo_driver_id',document.getElementById('driverIdInput').value.trim());
+ localStorage.setItem('spx_demo_phone',document.getElementById('phoneInput').value.trim());
+ localStorage.setItem('spx_demo_vehicle',document.getElementById('vehicleInput').value.trim());
+ const file=document.getElementById('photoInput').files[0];
+ const finish=()=>{
+  document.getElementById('profileName').textContent=localStorage.getItem('spx_demo_driver')||'MOTORISTA';
+  document.getElementById('profilePhone').textContent=localStorage.getItem('spx_demo_phone')||'Telefone não informado';
+  const photo=localStorage.getItem('spx_demo_photo');
+  document.getElementById('profileAvatar').innerHTML=photo?'<img alt="Foto do motorista" src="'+photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">':'👤';
+  renderQueue();renderBarcode();closeSettings();
+ };
+ if(file){
+  const reader=new FileReader();
+  reader.onload=()=>{try{localStorage.setItem('spx_demo_photo',reader.result)}catch(e){alert('A foto é grande demais para salvar. Escolha uma imagem menor.')}finish()};
+  reader.readAsDataURL(file);
+ } else finish();
+}
+function renderBarcode(){
+ document.getElementById('barcodeName').textContent=localStorage.getItem('spx_demo_driver')||'MOTORISTA';
+ document.getElementById('barcodeId').textContent=localStorage.getItem('spx_demo_driver_id')||'ID ilustrativo';
+ document.getElementById('barcodeVehicle').textContent=localStorage.getItem('spx_demo_vehicle')||'Passeio';
+ document.getElementById('barcodePlate').textContent=currentPlate();
+}
+function showBarcode(){
+ document.getElementById('drawer').style.display='none';
+ hideMainScreens();
+ document.getElementById('barcodeScreen').style.display='block';
+ window.scrollTo(0,0);
+ renderBarcode();
+}
+function updateClock(){let d=new Date(),p=n=>String(n).padStart(2,'0');document.getElementById('liveTime').textContent=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())}
+function makeHistory(){let items=[['BR2692371080617','Rua Teodoro da Silva, 373, Apt 101','Simone Nunes (dados fictícios)','04-08-2026 12:23'],['BR267132420037E','Rua Teodoro da Silva, 373, Apt 101','Destinatário fictício','04-08-2026 12:23'],['BR2671048030417','Rua Padre Francisco Lanna, 87, Ap 204','Destinatário fictício','04-08-2026 12:20'],['BR262828072003Q','Rua Padre Francisco Lanna, 146, Ap 202','Destinatário fictício','04-08-2026 12:18']];document.getElementById('historyList').innerHTML=items.map(x=>'<article class="deliveryCard"><div class="tracking">'+x[0]+'　▢</div><div class="address">● '+x[1]+'</div><div class="recipient">'+x[2]+'</div><div class="delivered">● Tempo de entrega: '+x[3]+'</div></article>').join('')}
+document.querySelectorAll('.barcode').forEach(el=>{for(let i=0;i<42;i++){let b=document.createElement('i');el.appendChild(b)}});
+makeHistory();renderQueue();renderBarcode();
+document.getElementById('profileName').textContent=localStorage.getItem('spx_demo_driver')||'MOTORISTA';
+document.getElementById('profilePhone').textContent=localStorage.getItem('spx_demo_phone')||'Telefone não informado';
+const savedPhoto=localStorage.getItem('spx_demo_photo');if(savedPhoto)document.getElementById('profileAvatar').innerHTML='<img alt="Foto do motorista" src="'+savedPhoto+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+updateClock();setInterval(updateClock,1000);
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script></body></html>

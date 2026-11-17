@@ -1,0 +1,26 @@
+{
+  "name": "SPX Motorista",
+  "short_name": "SPX Motorista",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f4f9",
+  "theme_color": "#ffffff",
+  "lang": "pt-BR",
+  "id": "spx-motorista",
+  "description": "Aplicativo de apoio para motoristas parceiros",
+  "icons": [
+    {
+      "src": "./launchericon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
